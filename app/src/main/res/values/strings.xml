@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">iAnime</string>
+    <string name="hint_user_name">Please enter username</string>
+    <string name="hint_password">Please enter password</string>
+    <string name="forgot_password">Forgot your password?</string>
+    <string name="login">Login</string>
+    <string name="login_with_fb">Continue with Facebook</string>
+    <string name="login_with_gg">Continue with Google</string>
+    <string name="or">OR</string>
+</resources>
