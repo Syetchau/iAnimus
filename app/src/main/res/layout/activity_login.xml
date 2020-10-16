@@ -35,7 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        app:cardElevation="4dp"
+        app:cardElevation="10dp"
         app:cardCornerRadius="10dp"
         app:cardBackgroundColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
@@ -100,14 +100,11 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_login"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/round_corner_button"
                 android:text="@string/login"
-                android:textSize="18sp"
                 android:textColor="@android:color/white"
-                android:textAllCaps="false" />
+                style="@style/ButtonStyle" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_or"
@@ -120,27 +117,36 @@
                 android:layout_marginTop="10dp"
                 android:layout_gravity="center" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_fb_login"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/round_corner_button_facebook"
+            <!--            <FrameLayout-->
+            <!--                android:id="@+id/fl_login"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_marginTop="16dp">-->
+
+            <com.facebook.login.widget.LoginButton
+                android:id="@+id/fb_btn"
                 android:text="@string/login_with_fb"
-                android:textSize="18sp"
+                android:layout_marginTop="5dp"
                 android:textColor="@android:color/white"
-                android:textAllCaps="false" />
+                style="@style/ButtonStyle" />
+
+            <!--                <androidx.appcompat.widget.AppCompatButton-->
+            <!--                    android:id="@+id/btn_fb_login"-->
+            <!--                    android:drawableStart="@drawable/ic_fb"-->
+            <!--                    android:background="@drawable/round_corner_button_facebook"-->
+            <!--                    android:text="@string/login_with_fb"-->
+            <!--                    android:textColor="@android:color/white"-->
+            <!--                    style="@style/ButtonStyle"/>-->
+            <!--            </FrameLayout>-->
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_gg_login"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/round_corner_button_facebook"
+                android:drawableStart="@drawable/ic_gg"
+                android:background="@drawable/round_corner_button_google"
                 android:text="@string/login_with_gg"
-                android:textSize="18sp"
-                android:textColor="@android:color/white"
-                android:textAllCaps="false" />
+                android:textColor="@android:color/black"
+                style="@style/ButtonStyle" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 

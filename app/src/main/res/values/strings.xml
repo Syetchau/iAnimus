@@ -1,5 +1,9 @@
 <resources>
-    <string name="app_name">iAnime</string>
+    <string name="app_name">iAnimus</string>
+
+    <string name="facebook_app_id">1295734030763083</string>
+    <string name="fb_login_protocol_scheme">fb1295734030763083</string>
+
     <string name="hint_user_name">Please enter username</string>
     <string name="hint_password">Please enter password</string>
     <string name="forgot_password">Forgot your password?</string>

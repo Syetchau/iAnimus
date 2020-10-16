@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "893931133479",
+    "firebase_url": "https://ianimus.firebaseio.com",
+    "project_id": "ianimus",
+    "storage_bucket": "ianimus.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:893931133479:android:9385cc063c4a49344d0c02",
+        "android_client_info": {
+          "package_name": "com.example.ianime"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "893931133479-p5kmf096dve2stv4i2scbgjl20bh7smo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAetQnv2W3Z1pxX9PI_NjNUZmdjcFFhNmw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "893931133479-p5kmf096dve2stv4i2scbgjl20bh7smo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
