@@ -16,11 +16,14 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.util.Arrays;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -39,18 +42,23 @@ public class LoginActivity extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
         FacebookSdk.sdkInitialize(getApplicationContext());
-        activityLoginBinding.fbBtn.setReadPermissions("email", "public_profile");
-
         callbackManager = CallbackManager.Factory.create();
         initListener();
+        initClickEvent();
+    }
 
-        activityLoginBinding.fbBtn.setOnClickListener(v -> executeFacebookLogin());
+    private void initClickEvent() {
+        activityLoginBinding.btnFbLogin.setOnClickListener(v -> executeFacebookLogin());
+
     }
 
     private void initListener() {
         listener = firebaseAuth -> {
             FirebaseUser user = firebaseAuth.getCurrentUser();
             updateUI(user);
+            if (user != null) {
+                navigateToHomePage();
+            }
         };
 
         accessTokenTracker = new AccessTokenTracker() {
@@ -65,26 +73,29 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void executeFacebookLogin() {
-        activityLoginBinding.fbBtn.registerCallback(callbackManager,
+        LoginManager.getInstance().registerCallback(callbackManager,
                 new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                Toast.makeText(LoginActivity.this, "Success", Toast.LENGTH_SHORT).show();
-                Log.d("", "loginSuccess" + loginResult);
-                handleFacebookToken(loginResult.getAccessToken());
-                navigateToHomePage();
-            }
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        Toast.makeText(LoginActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                        Log.d("", "loginSuccess" + loginResult);
+                        handleFacebookToken(loginResult.getAccessToken());
+                        navigateToHomePage();
+                    }
 
-            @Override
-            public void onCancel() {
+                    @Override
+                    public void onCancel() {
 
-            }
+                    }
 
-            @Override
-            public void onError(FacebookException error) {
-                Log.d("", "loginError" + error);
-            }
-        });
+                    @Override
+                    public void onError(FacebookException error) {
+                        Log.d("", "loginError" + error);
+                    }
+                });
+
+        LoginManager.getInstance().logInWithReadPermissions(LoginActivity.this, Arrays.asList(
+                "email", "public_profile"));
     }
 
     private void handleFacebookToken(AccessToken accessToken) {
@@ -107,11 +118,11 @@ public class LoginActivity extends AppCompatActivity {
 
     private void updateUI(FirebaseUser user) {
         if (user != null) {
-            activityLoginBinding.fbBtn.setText(user.getDisplayName());
+            activityLoginBinding.btnFbLogin.setText(user.getDisplayName());
             if (user.getPhotoUrl() != null) {
                 String photoUrl = user.getPhotoUrl().toString();
                 photoUrl = photoUrl + "?type=large";
-//                Picasso.get().load(photoUrl).into(activityLoginBinding.ivLoginIcon);
+//                Picasso.get().load(photoUrl).into((Target) activityLoginBinding.btnFbLogin);
             } else {
 
             }
@@ -138,8 +149,22 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        firebaseAuth.addAuthStateListener(listener);
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
+        if (listener != null) {
+            firebaseAuth.removeAuthStateListener(listener);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         if (listener != null) {
             firebaseAuth.removeAuthStateListener(listener);
         }
