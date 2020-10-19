@@ -1,5 +1,6 @@
 package com.example.ianime;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,6 +19,11 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,13 +31,21 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Arrays;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+
+    //GOOGLE CLIENT ID
+    //893931133479-q19lvc3bbe6ordub0eh8fijhvhhopgv4.apps.googleusercontent.com
+
+    //CLIENT SECRET
+    //b3KoK-cSX6wRV3zrTUwyuCJT
 
     private ActivityLoginBinding activityLoginBinding;
     private CallbackManager callbackManager;
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener listener;
     private AccessTokenTracker accessTokenTracker;
+    private GoogleApiClient googleApiClient;
+    private static final int SIGN_IN = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,16 +57,22 @@ public class LoginActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
-        initListener();
+        GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(
+                GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+        googleApiClient =
+                new GoogleApiClient.Builder(this)
+                        .enableAutoManage(this, this)
+                        .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions).build();
+        initFacebookListener();
         initClickEvent();
     }
 
     private void initClickEvent() {
         activityLoginBinding.btnFbLogin.setOnClickListener(v -> executeFacebookLogin());
-
+        activityLoginBinding.btnGgLogin.setOnClickListener(v -> executeGoogleLogin());
     }
 
-    private void initListener() {
+    private void initFacebookListener() {
         listener = firebaseAuth -> {
             FirebaseUser user = firebaseAuth.getCurrentUser();
             updateUI(user);
@@ -116,6 +136,12 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    private void executeGoogleLogin() {
+        Intent intent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivityForResult(intent, SIGN_IN);
+    }
+
     private void updateUI(FirebaseUser user) {
         if (user != null) {
             activityLoginBinding.btnFbLogin.setText(user.getDisplayName());
@@ -138,8 +164,17 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SIGN_IN) {
+            GoogleSignInResult googleSignInResult =
+                    Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            if (googleSignInResult.isSuccess()) {
+                navigateToHomePage();
+            } else {
+                Toast.makeText(this, "Login Failed", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     @Override
@@ -168,5 +203,15 @@ public class LoginActivity extends AppCompatActivity {
         if (listener != null) {
             firebaseAuth.removeAuthStateListener(listener);
         }
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
     }
 }
